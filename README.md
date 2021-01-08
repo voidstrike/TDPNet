@@ -16,12 +16,12 @@ In this project, we are focusing on the point cloud reconstruction from a single
 ## Getting Started
 ### Installation
 
-- Clone this repo:
+1. Clone this repo:
 ```
 git clone https://github.com/voidstrike/TDPNet.git
 ```
 
-- Install the dependencies:
+2. Install the dependencies:
 * Python 3.6
 * CUDA 11.0
 * G++ or GCC5
@@ -29,7 +29,7 @@ git clone https://github.com/voidstrike/TDPNet.git
 * [Scikit-learn](https://scikit-learn.org/stable/index.html) 0.24.0
 * [Pymesh](https://github.com/PyMesh/PyMesh) 1.0.2
 
-- Compile CUDA kernel for CD/EMD loss
+3. Compile CUDA kernel for CD/EMD loss
 ```
 cd src/metrics/pytorch_structural_losses/
 make clean
