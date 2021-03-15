@@ -80,8 +80,7 @@ We provide some qualitative results of our model.
 
 ## Note
 We provide the code for the single-category experiment. <br>
-The multiple-category code is currently unavailable since we directly modified it for the next project. <br>
-We will try to provide that code in the further, if possible.
+The multiple-category code is currently unavailable and we will try to provide it in the future.
 
 ## Citation
 

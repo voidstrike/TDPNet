@@ -93,7 +93,7 @@ def main(conf):
 
         print('Start Training 3D self-reconstruction-------------------------')
 
-        for i in range(1):
+        for i in range(100):
             total_loss = 0.
             print('Start Epoch {}'.format(str(i + 1)))
             for idx, (_, pc, stat, label) in enumerate(ds_loader):
