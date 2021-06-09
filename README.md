@@ -2,7 +2,7 @@
 
 This repository contains the PyTorch implementation of the paper:
 
-[**Single View Point Cloud Generation via Unified 3D Prototype**](). <br>
+[**Single View Point Cloud Generation via Unified 3D Prototype**](https://ojs.aaai.org/index.php/AAAI/article/view/16303). <br>
 Yu Lin, Yigong Wang, Yifan Li, Yang Gao, Zhuoyi Wang, Latifur Khan <br>
 In [AAAI 2021](https://aaai.org/Conferences/AAAI-21/)
 
@@ -80,9 +80,21 @@ We provide some qualitative results of our model.
 
 ## Note
 We provide the code for the single-category experiment. <br>
-The multiple-category code is currently unavailable and we will try to provide it in the future.
+
+**UPDATE 2021 June** Complied CD & EMD seems outdated, please try to use the [Kaolin](https://github.com/NVIDIAGameWorks/kaolin) repo and update the code accordlingly.
 
 ## Citation
 
 If you use this code for your research, please consider cite our paper:
-PENDING
+
+```
+@inproceedings{lin2021single,
+  title={Single View Point Cloud Generation via Unified 3D Prototype},
+  author={Lin, Yu and Wang, Yigong and Li, Yi-Fan and Wang, Zhuoyi and Gao, Yang and Khan, Latifur},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={35},
+  number={3},
+  pages={2064--2072},
+  year={2021}
+}
+```
