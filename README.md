@@ -83,6 +83,8 @@ We provide the code for the single-category experiment. <br>
 
 **UPDATE 2021 June** Complied CD & EMD seems outdated, please try to use the [Kaolin](https://github.com/NVIDIAGameWorks/kaolin) repo and update the code accordlingly.
 
+**UPDATE 2021 Sep** "Phong.py" for image rendering is uploaded for reference.
+
 ## Citation
 
 If you use this code for your research, please consider cite our paper:
