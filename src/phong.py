@@ -7,24 +7,27 @@ C = bpy.context
 D = bpy.data
 scene = D.scenes['Scene']
 
+# NOTE: Modify this line to your BG image path
+background = '/home/yulin/Desktop/background.jpg'
+
 # cameras: a list of camera positions
 # a camera position is defined by two parameters: (theta, phi),
 # where we fix the "r" of (r, theta, phi) in spherical coordinate system.
 
 # 5 orientations: front, right, back, left, top
-cameras = [
-    (60, 0), (60, 90), (60, 180), (60, 270),
-    (0, 0)
-]
+# cameras = [
+#    (60, 0), (60, 90), (60, 180), (60, 270),
+#    (0, 0)
+#]
 
 # 12 orientations around the object with 30-deg elevation
-# cameras = [(60, i) for i in range(0, 360, 30)]
+cameras = [(60, i) for i in range(0, 360, 30)]
 
 render_setting = scene.render
 
 # output image size = (W, H)
-w = 500
-h = 500
+w = 600
+h = 600
 render_setting.resolution_x = w
 render_setting.resolution_y = h
 
@@ -41,8 +44,7 @@ def main():
     image_dir = argv[1]
 
     # blender has no native support for off files
-    install_off_addon()
-    # bpy.ops.wm.addon_enable(module='import_off')
+    # install_off_addon()
 
     init_camera()
     fix_camera_to_origin()
@@ -52,12 +54,12 @@ def main():
 
 def install_off_addon():
     try:
-        bpy.ops.preferences.addon_install(
+        bpy.ops.wm.addon_install(
             overwrite=False,
             filepath=os.path.dirname(__file__) +
             '/blender-off-addon/import_off.py'
         )
-        bpy.ops.preferences.addon_enable(module='import_off')
+        bpy.ops.wm.addon_enable(module='import_off')
     except Exception:
         print("""Import blender-off-addon failed.
               Did you pull the blender-off-addon submodule?
@@ -104,9 +106,11 @@ def fix_camera_to_origin():
 
 def do_model(path, image_dir):
     name = load_model(path)
-    center_model(name)
-    normalize_model(name)
-    image_subdir = os.path.join(image_dir, name)
+    # Remove following 2 lines because ShapeNetCoreV2 is already normalized
+    # center_model(name)
+    # normalize_model(name)
+    # image_subdir = os.path.join(image_dir, name)
+    image_subdir = image_dir
     for i, c in enumerate(cameras):
         move_camera(c)
         render()
@@ -150,6 +154,8 @@ def delete_model(name):
 
 def center_model(name):
     bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
+    for obj in D.objects:
+        print(obj.name)
     D.objects[name].location = (0, 0, 0)
 
 
@@ -176,9 +182,57 @@ def move_camera(coord):
 
     D.objects['Camera'].location = (loc_x, loc_y, loc_z)
 
+    image_node = bpy.context.scene.node_tree.nodes[0]
+    image_node.image = bpy.data.images.load(background)
+    file_output_node = bpy.context.scene.node_tree.nodes[4]
+    file_output_node.file_slots[0].path = 'blender-######.color.png' # blender placeholder #
+
 
 def render():
     bpy.ops.render.render()
+
+def node_setting_init():
+    """node settings for render rgb images
+    mainly for compositing the background images
+    """
+
+    bpy.context.scene.use_nodes = True
+    tree = bpy.context.scene.node_tree
+    links = tree.links
+
+    for node in tree.nodes:
+        tree.nodes.remove(node)
+    
+    image_node = tree.nodes.new('CompositorNodeImage')
+    scale_node = tree.nodes.new('CompositorNodeScale')
+    alpha_over_node = tree.nodes.new('CompositorNodeAlphaOver')
+    render_layer_node = tree.nodes.new('CompositorNodeRLayers')
+    file_output_node = tree.nodes.new('CompositorNodeOutputFile')
+
+    scale_node.space = 'RENDER_SIZE'
+    #file_output_node.base_path = g_syn_rgb_folder
+
+    links.new(image_node.outputs[0], scale_node.inputs[0])
+    links.new(scale_node.outputs[0], alpha_over_node.inputs[1])
+    links.new(render_layer_node.outputs[0], alpha_over_node.inputs[2])
+    links.new(alpha_over_node.outputs[0], file_output_node.inputs[0])
+
+def scene_setting_init():
+    """initialize blender setting configurations
+    """
+    sce = bpy.context.scene.name
+    bpy.data.scenes[sce].render.engine = 'CYCLES'
+    bpy.data.scenes[sce].cycles.film_transparent = True
+
+    #output
+    bpy.data.scenes[sce].render.image_settings.color_mode = 'RGB'
+    bpy.data.scenes[sce].render.image_settings.color_depth = '16'
+    bpy.data.scenes[sce].render.image_settings.file_format = 'PNG'
+
+    #dimensions
+    #bpy.data.scenes[sce].render.resolution_x = g_resolution_x
+    #bpy.data.scenes[sce].render.resolution_y = g_resolution_y
+    #bpy.data.scenes[sce].render.resolution_percentage = g_resolution_percentage
 
 
 def save(image_dir, name):
@@ -188,4 +242,6 @@ def save(image_dir, name):
 
 
 if __name__ == '__main__':
+    node_setting_init()
+    scene_setting_init()
     main()
