@@ -44,5 +44,6 @@ if __name__ == '__main__':
     parser.add_argument('--cat', type=str, required=True)
 
     conf = parser.parse_args()
-    mv_npy(conf.src, conf.cat)
-    # main(conf)
+    # NOTE: following two lines are interchangeable, commnet & de-comment them based on your need
+    # mv_npy(conf.src, conf.cat)  # legacy code that copies .npy files
+    main(conf)  # Generate train / test split with 80% ratio
